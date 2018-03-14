@@ -29,4 +29,4 @@ Notes:
 
 ## 5. Save the current configuration to apply on reboot
 
-`pm2 save && pm2 startup`
+`pm2 save && pm2 startup ubuntu -u profittrailer --hp /var/opt/profittrailer`
