@@ -70,8 +70,8 @@ echo "Unzipping ProfitTrailer"
 unzip -j /tmp/ProfitTrailer.zip -d $PROFITTRAILER_HOME
 
 echo "Updating PM2 configuration"
-sed -i 's/"cwd": "."/"cwd": "'$PROFITTRAILER_HOME'"/' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
-sed -i 's/"autorestart": false/"autorestart": true,\n      "error_file": "'$PROFITTRAILER_HOME'\/logs\/error.log",\n      "out_file": "'$PROFITTRAILER_HOME'\/logs\/out.log"/' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
+sed -i 's|"cwd": "."|"cwd": "'$PROFITTRAILER_HOME'"|' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
+sed -i 's|"autorestart": false|"autorestart": true,\n      "error_file": "'$PROFITTRAILER_HOME'/logs/error.log",\n      "out_file": "'$PROFITTRAILER_HOME'/logs/out.log"|' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
 
 echo "Adjusting file permissions"
 chown -R $PROFITTRAILER_USER:$PROFITTRAILER_USER $PROFITTRAILER_HOME
