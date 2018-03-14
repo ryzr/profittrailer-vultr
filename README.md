@@ -21,7 +21,7 @@ Configuration
 
 Notes:
 - The bot can be located in `/var/opt/profittrailer`
-- You can do this via the commandline with something like `scp ~Downloads/ProfitTrailer/application.properties root@YOUR_SERVER_IP:/var/opt/profittrailer/application.properties`
+- You can do this via the command-line with something like `scp ~Downloads/ProfitTrailer/application.properties root@YOUR_SERVER_IP:/var/opt/profittrailer/application.properties`
 
 ## 4. Run ProfitTrailer bot
 
@@ -29,4 +29,4 @@ Notes:
 
 ## 5. Save the current configuration to apply on reboot
 
-`pm2 save && pm2 startup ubuntu -u profittrailer --hp /var/opt/profittrailer`
+`pm2 save && pm2 startup`

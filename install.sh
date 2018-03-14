@@ -47,6 +47,7 @@ do
     if [[ "$UPGRADE_STATE" -eq "3" ]]; then
         sudo apt-get -y update && sudo apt-get -y install default-jre unzip nodejs npm
         npm install pm2@latest -g
+        ln -s /usr/bin/nodejs /usr/bin/node
         break
     fi
 
@@ -61,7 +62,10 @@ fi
 # Complete Install
 # ------------------------------------------------
 
-unzip -j /tmp/ProfitTrailer.zip "ProfitTrailer/*" -d $PROFITTRAILER_HOME
+unzip -j /tmp/ProfitTrailer.zip -d $PROFITTRAILER_HOME
+sed -i 's/"cwd": "."/"cwd": "'$PROFITTRAILER_HOME'"/' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
+sed -i 's/"autorestart": false/"autorestart": true,\n      "error_file": "'$PROFITTRAILER_HOME'\/logs\/error.log",\n      "out_file": "'$PROFITTRAILER_HOME'\/logs\/out.log"/' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
+
 rm -f /tmp/ProfitTrailer.zip $PROFITTRAILER_HOME/install-in-progress
 
 chown -R $PROFITTRAILER_USER:$PROFITTRAILER_USER $PROFITTRAILER_HOME
