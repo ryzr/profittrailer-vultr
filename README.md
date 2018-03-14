@@ -7,7 +7,7 @@ Configuration:
 - Type: Boot
 - Contents: See [install.sh](https://raw.githubusercontent.com/ryzr/profittrailer-vultr/master/install.sh)
 
-You may uncomment lines 18 - 22 if you wish to allocate swap memory, which may be useful if your server does not have a lot of RAM already.
+You may set `SWAP_ENABLED` to `true` if you wish to allocate swap memory, which may be useful if your server does not have a lot of RAM already.
 
 ## 2. [Deploy A New Server](https://my.vultr.com/deploy/)
 
