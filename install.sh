@@ -7,14 +7,13 @@ PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/downlo
 SWAP_ENABLED=false
 SWAP_SIZE=1G
 
+echo "Running ProfitTrailer install script"
+useradd --system --user-group --create-home -K UMASK=0022 --home $PROFITTRAILER_HOME $PROFITTRAILER_USER
 ln -s /tmp/firstboot.log ${PROFITTRAILER_HOME}/install-in-progress
 
 # ------------------------------------------------
 # Download ProfitTrailer
 # ------------------------------------------------
-
-echo "Adding user"
-useradd --system --user-group --create-home -K UMASK=0022 --home $PROFITTRAILER_HOME $PROFITTRAILER_USER
 
 echo "Downloading ProfitTrailer"
 curl -L -o /tmp/ProfitTrailer.zip $PROFITTRAILER_DOWNLOAD
