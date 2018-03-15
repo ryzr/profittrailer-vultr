@@ -1,13 +1,60 @@
 #!/bin/sh
 
-PROFITTRAILER_USER=profittrailer
-PROFITTRAILER_HOME=/var/opt/profittrailer
-PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/download/v1.2.6.24/ProfitTrailer.zip
-
 SWAP_ENABLED=false
 SWAP_SIZE=1G
 
 DISABLE_PASSWORD_LOGIN=false
+SSH_PORT=22
+
+PROFITTRAILER_USER=profittrailer
+PROFITTRAILER_HOME=/var/opt/profittrailer
+PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/download/v1.2.6.24/ProfitTrailer.zip
+
+# ------------------------------------------------
+# (OPTIONAL) Allocate SWAP Memory
+# ------------------------------------------------
+
+# This step is optional, but may be necessary if your server is
+# running out of memory. Set SWAP_ENABLED to true if you think SWAP
+# is necessary for your setup
+# ------------------------------------------------
+
+if [[ "${SWAP_ENABLED}" == "true" ]]; then
+    echo "Allocating swap"
+    sudo fallocate -l $SWAP_SIZE /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+fi
+
+# ------------------------------------------------
+# (OPTIONAL) Disable login with password
+# ------------------------------------------------
+
+# This step is optional, but adds an additional layer of security
+# To ssh into server, you MUST authenticate with an authorised SSH key
+# ------------------------------------------------
+
+if [[ "${DISABLE_PASSWORD_LOGIN}" == "true" ]]; then
+    echo "Disabling logging in with passwords"
+    sed -i 's|#PasswordAuthentication yes|PasswordAuthentication no|' /etc/ssh/sshd_config
+    sudo service sshd restart
+fi
+
+# ------------------------------------------------
+# (OPTIONAL) Change SSH port
+# ------------------------------------------------
+
+# This step is optional, but adds an additional layer of security
+# To ssh into server, you MUST specify your custom port "-p SSH_PORT"
+# ------------------------------------------------
+
+if [[ "$SSH_PORT" -ne "22" ]]; then
+    echo "Changing SSH port"
+    sed -i 's|#Port 22|Port '$SSH_PORT'|' /etc/ssh/sshd_config
+    sudo service sshd restart
+fi
 
 echo "Running ProfitTrailer install script"
 useradd --system --user-group --create-home -K UMASK=0022 --home $PROFITTRAILER_HOME $PROFITTRAILER_USER
@@ -51,7 +98,7 @@ do
     fi
 
     if [[ "$UPGRADE_STATE" -eq "3" ]]; then
-        sudo apt-get -y update && sudo apt-get -y install default-jre unzip nodejs npm
+        sudo apt-get -y install default-jre unzip nodejs npm SSHGuard fail2ban
         npm install pm2@latest -g
         ln -s /usr/bin/nodejs /usr/bin/node
         break
@@ -79,38 +126,6 @@ sed -i 's|"autorestart": false|"autorestart": true,\n      "error_file": "'$PROF
 echo "Adjusting file permissions"
 chown -R $PROFITTRAILER_USER:$PROFITTRAILER_USER $PROFITTRAILER_HOME
 chmod +x $PROFITTRAILER_HOME/ProfitTrailer.jar
-
-# ------------------------------------------------
-# (OPTIONAL) Allocate SWAP Memory
-# ------------------------------------------------
-
-# This step is optional, but may be necessary if your server is
-# running out of memory. Set SWAP_ENABLED to true if you think SWAP
-# is necessary for your setup
-# ------------------------------------------------
-
-if [[ "${SWAP_ENABLED}" == "true" ]]; then
-    echo "Allocating swap"
-    sudo fallocate -l $SWAP_SIZE /swapfile
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-fi
-
-# ------------------------------------------------
-# (OPTIONAL) Disable login with password
-# ------------------------------------------------
-
-# This step is optional, but adds an additional layer of security
-# To ssh into server, you MUST authenticate with an authorised SSH key
-# ------------------------------------------------
-
-if [[ "${DISABLE_PASSWORD_LOGIN}" == "true" ]]; then
-    echo "Disabling logging in with passwords"
-    sed -i 's|#PasswordAuthentication yes|PasswordAuthentication no|' /etc/ssh/sshd_config
-    sudo service ssh restart
-fi
 
 echo "Install complete"
 cp /tmp/firstboot.log $PROFITTRAILER_HOME/install.log
