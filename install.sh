@@ -120,7 +120,7 @@ do
     fi
 
     if [[ "$UPGRADE_STATE" -eq "3" ]]; then
-        sudo apt-get -y install default-jre unzip nodejs npm SSHGuard fail2ban
+        sudo apt-get -y install default-jre unzip nodejs npm fail2ban
         npm install pm2@latest -g
         ln -s /usr/bin/nodejs /usr/bin/node
         break
