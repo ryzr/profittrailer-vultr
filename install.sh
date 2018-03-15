@@ -3,6 +3,8 @@
 SWAP_ENABLED=false
 SWAP_SIZE=1G
 
+ADMIN_USERNAME=admin
+DISABLE_ROOT_LOGIN=false
 DISABLE_PASSWORD_LOGIN=false
 SSH_PORT=22
 
@@ -43,6 +45,24 @@ if [[ "${DISABLE_PASSWORD_LOGIN}" == "true" ]]; then
 fi
 
 # ------------------------------------------------
+# (OPTIONAL) Disable root login
+# ------------------------------------------------
+
+# This step is optional, but adds an additional layer of security
+# To ssh into server, you MUST authenticate with $ADMIN_USERNAME
+# ------------------------------------------------
+
+if [[ "${DISABLE_ROOT_LOGIN}" == "true" ]]; then
+    echo "Disabling root login"
+    useradd $ADMIN_USERNAME --create-home --shell /bin/bash
+    cp /root/.ssh /home/$ADMIN_USERNAME/.ssh -R
+    usermod -aG sudo $ADMIN_USERNAME
+    sed -i 's|'$ADMIN_USERNAME':!:|'$ADMIN_USERNAME':'$(sed -n 's|^root:\([^:]*\):.*|\1|p' /etc/shadow)':|' /etc/shadow
+    sed -i 's|PermitRootLogin yes|PermitRootLogin no|' /etc/ssh/sshd_config
+    sudo service sshd restart
+fi
+
+# ------------------------------------------------
 # (OPTIONAL) Change SSH port
 # ------------------------------------------------
 
@@ -52,7 +72,8 @@ fi
 
 if [[ "$SSH_PORT" -ne "22" ]]; then
     echo "Changing SSH port"
-    sed -i 's|#Port 22|Port '$SSH_PORT'|' /etc/ssh/sshd_config
+    sed -i 's|Port 22|Port '$SSH_PORT'|' /etc/ssh/sshd_config
+    sed -i 's|#Port '$SSH_PORT'|Port '$SSH_PORT'|' /etc/ssh/sshd_config
     sudo service sshd restart
 fi
 
