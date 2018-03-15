@@ -68,6 +68,7 @@ fi
 
 echo "Unzipping ProfitTrailer"
 unzip -j /tmp/ProfitTrailer.zip -d $PROFITTRAILER_HOME
+mv /tmp/ProfitTrailer/* $PROFITTRAILER_HOME
 
 echo "Updating PM2 configuration"
 sed -i 's|"cwd": "."|"cwd": "'$PROFITTRAILER_HOME'"|' $PROFITTRAILER_HOME/pm2-ProfitTrailer.json
@@ -96,4 +97,5 @@ if [[ "${SWAP_ENABLED}" == "true" ]]; then
 fi
 
 echo "Install complete"
-rm -f /tmp/ProfitTrailer.zip $PROFITTRAILER_HOME/install-in-progress
+cp /tmp/firstboot.log $PROFITTRAILER_HOME/install.log
+rm -rf /tmp/ProfitTrailer /tmp/ProfitTrailer.zip $PROFITTRAILER_HOME/install-in-progress
