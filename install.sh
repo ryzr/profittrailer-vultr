@@ -69,7 +69,7 @@ fi
 # ------------------------------------------------
 
 echo "Unzipping ProfitTrailer"
-unzip /tmp/ProfitTrailer.zip -d $PROFITTRAILER_HOME
+unzip /tmp/ProfitTrailer.zip -d /tmp
 mv /tmp/ProfitTrailer/* $PROFITTRAILER_HOME
 
 echo "Updating PM2 configuration"
