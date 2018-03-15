@@ -24,10 +24,10 @@ PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/downlo
 
 if [[ "${SWAP_ENABLED}" == "true" ]]; then
     echo "Allocating swap"
-     fallocate -l $SWAP_SIZE /swapfile
-     chmod 600 /swapfile
-     mkswap /swapfile
-     swapon /swapfile
+    fallocate -l $SWAP_SIZE /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
     echo '/swapfile none swap sw 0 0' |  tee -a /etc/fstab
 fi
 
@@ -58,7 +58,7 @@ if [[ "${DISABLE_ROOT_LOGIN}" == "true" ]]; then
     useradd $ADMIN_USERNAME --create-home --shell /bin/bash
     cp /root/.ssh /home/$ADMIN_USERNAME/.ssh -R
     chown -R $ADMIN_USERNAME:$ADMIN_USERNAME /home/$ADMIN_USERNAME/.ssh
-    usermod -aG  $ADMIN_USERNAME
+    usermod -aG sudo $ADMIN_USERNAME
     sed -i 's|'$ADMIN_USERNAME':!:|'$ADMIN_USERNAME':'$(sed -n 's|^root:\([^:]*\):.*|\1|p' /etc/shadow)':|' /etc/shadow
     sed -i 's|PermitRootLogin yes|PermitRootLogin no|' /etc/ssh/sshd_config
     service sshd restart
@@ -126,7 +126,7 @@ do
     fi
 
     if [[ "$UPGRADE_STATE" -eq "3" ]]; then
-         apt-get -y install default-jre unzip nodejs npm fail2ban
+        apt-get -y install default-jre unzip nodejs npm fail2ban
         npm install pm2@latest -g
         ln -s /usr/bin/nodejs /usr/bin/node
         break
