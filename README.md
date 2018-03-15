@@ -35,6 +35,8 @@ Notes:
 
 `pm2 save && pm2 startup`
 
+You can now monitor your server at SERVERIP:8081 (or whichever port you set in application.properties)
+
 ## Recommendations
 
 ### Disable Root Login
