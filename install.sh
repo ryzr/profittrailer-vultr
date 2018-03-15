@@ -7,6 +7,8 @@ PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/downlo
 SWAP_ENABLED=false
 SWAP_SIZE=1G
 
+DISABLE_PASSWORD_LOGIN=false
+
 echo "Running ProfitTrailer install script"
 useradd --system --user-group --create-home -K UMASK=0022 --home $PROFITTRAILER_HOME $PROFITTRAILER_USER
 ln -s /tmp/firstboot.log ${PROFITTRAILER_HOME}/install-in-progress
@@ -94,6 +96,20 @@ if [[ "${SWAP_ENABLED}" == "true" ]]; then
     sudo mkswap /swapfile
     sudo swapon /swapfile
     echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+fi
+
+# ------------------------------------------------
+# (OPTIONAL) Disable login with password
+# ------------------------------------------------
+
+# This step is optional, but adds an additional layer of security
+# To ssh into server, you MUST authenticate with an authorised SSH key
+# ------------------------------------------------
+
+if [[ "${DISABLE_PASSWORD_LOGIN}" == "true" ]]; then
+    echo "Disabling logging in with passwords"
+    sed -i 's|#PasswordAuthentication yes|PasswordAuthentication no|' /etc/ssh/sshd_config
+    sudo service ssh restart
 fi
 
 echo "Install complete"
