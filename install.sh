@@ -56,6 +56,7 @@ if [[ "${DISABLE_ROOT_LOGIN}" == "true" ]]; then
     echo "Disabling root login"
     useradd $ADMIN_USERNAME --create-home --shell /bin/bash
     cp /root/.ssh /home/$ADMIN_USERNAME/.ssh -R
+    chown -R $ADMIN_USERNAME:$ADMIN_USERNAME /home/$ADMIN_USERNAME/.ssh
     usermod -aG sudo $ADMIN_USERNAME
     sed -i 's|'$ADMIN_USERNAME':!:|'$ADMIN_USERNAME':'$(sed -n 's|^root:\([^:]*\):.*|\1|p' /etc/shadow)':|' /etc/shadow
     sed -i 's|PermitRootLogin yes|PermitRootLogin no|' /etc/ssh/sshd_config
