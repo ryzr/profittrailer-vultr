@@ -11,7 +11,7 @@ SSH_PORT=22
 
 PROFITTRAILER_USER=profittrailer
 PROFITTRAILER_HOME=/var/opt/profittrailer
-PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/download/v1.2.6.24/ProfitTrailer.zip
+PROFITTRAILER_DOWNLOAD=https://github.com/taniman/profit-trailer/releases/download/v2.0.2/ProfitTrailer.zip
 
 # ------------------------------------------------
 # (OPTIONAL) Allocate SWAP Memory
